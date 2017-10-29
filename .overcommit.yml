@@ -1,0 +1,11 @@
+PreCommit:
+  ShellCheck:
+    enabled: true
+    on_warn: fail
+    env:
+      # Disable shebang checking (as we modularize all functions to be one per file)
+      SHELLCHECK_OPTS: '-e SC2148'
+  EnsureNoSortPipeUniq:
+    enabled: true
+    include:
+      - '**/*.sh'
