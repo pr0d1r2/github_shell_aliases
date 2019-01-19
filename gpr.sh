@@ -8,19 +8,32 @@
 #
 # If you set up `github_pr_labels` function with your GitHub labels
 # mapped to your projects they will be automatically applied.
+#
+# If you set up `github_pr_comments` function with your GitHub comments
+# mapped to projects and specific file (for example to comment with command
+# to run specific CI checks if specific files change)
 function gpr() {
   local gpr_GITHUB_USER
   local gpr_GITHUB_LABELS
+  local gpr_GITHUB_COMMENTS
   local gpr_HUB_PARAMS
+  local gpr_HUB_OUTPUT
+  local gpr_GITHUB_PR_LINK
   ensure_command git || return $?
   ensure_command hub || return $?
   gpr_GITHUB_USER="$(github_user 2>/dev/null)"
   gpr_GITHUB_LABELS="$(github_pr_labels 2>/dev/null)"
+  gpr_GITHUB_COMMENTS="$(github_pr_comments 2>/dev/null)"
   if [ -n "$gpr_GITHUB_USER" ]; then
     gpr_HUB_PARAMS="-a '$gpr_GITHUB_USER'"
   fi
   if [ -n "$gpr_GITHUB_LABELS" ]; then
     gpr_HUB_PARAMS="-l '$gpr_GITHUB_LABELS'"
   fi
-  hub pull-request -o --push $gpr_HUB_PARAMS || return $?
+  gpr_HUB_OUTPUT="$(hub pull-request -o --push $gpr_HUB_PARAMS)" || return $?
+  gpr_GITHUB_PR_LINK="$(echo "$gpr_HUB_OUTPUT" | grep "^https://github.com/" | grep "/pull/")"
+  echo "$gpr_HUB_OUTPUT" || return $?
+  if [ -n "$gpr_GITHUB_COMMENTS" ]; then
+    github_pull_comment_issue "$gpr_GITHUB_PR_LINK" "$gpr_GITHUB_COMMENTS" || return $?
+  fi
 }
