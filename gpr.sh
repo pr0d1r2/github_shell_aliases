@@ -22,5 +22,5 @@ function gpr() {
   if [ -n "$gpr_GITHUB_LABELS" ]; then
     gpr_HUB_PARAMS="-l '$gpr_GITHUB_LABELS'"
   fi
-  hub pull-request --push $gpr_HUB_PARAMS || return $?
+  hub pull-request -o --push $gpr_HUB_PARAMS || return $?
 }
