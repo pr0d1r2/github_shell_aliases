@@ -25,7 +25,7 @@ function gpr() {
   gpr_GITHUB_LABELS="$(github_pr_labels 2>/dev/null)"
   gpr_GITHUB_COMMENTS="$(github_pr_comments 2>/dev/null)"
   if [ -n "$gpr_GITHUB_USER" ]; then
-    gpr_HUB_PARAMS="-a '$gpr_GITHUB_USER'"
+    gpr_HUB_PARAMS="-a $gpr_GITHUB_USER"
   fi
   if [ -n "$gpr_GITHUB_LABELS" ]; then
     gpr_HUB_PARAMS="-l $gpr_GITHUB_LABELS"
