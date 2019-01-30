@@ -19,6 +19,8 @@ function gpr() {
   local gpr_HUB_PARAMS
   local gpr_HUB_OUTPUT
   local gpr_GITHUB_PR_LINK
+  local gpr_LAST_COMMIT_MESSAGE
+  local gpr_PR_TEMPLATE
   ensure_command git || return $?
   ensure_command hub || return $?
   gpr_GITHUB_USER="$(github_user 2>/dev/null)"
@@ -31,9 +33,17 @@ function gpr() {
     gpr_HUB_PARAMS="$gpr_HUB_PARAMS -l $gpr_GITHUB_LABELS"
   fi
   if [ -f .github/PULL_REQUEST_TEMPLATE.md ]; then
-    gpr_HUB_PARAMS="$gpr_HUB_PARAMS -F .github/PULL_REQUEST_TEMPLATE.md"
+    gpr_LAST_COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    gpr_PR_TEMPLATE="/tmp/.gpr-$$-pr-template.md"
+    echo "$gpr_LAST_COMMIT_MESSAGE" > "$gpr_PR_TEMPLATE"
+    echo >> "$gpr_PR_TEMPLATE"
+    cat ".github/PULL_REQUEST_TEMPLATE.md" >> "$gpr_PR_TEMPLATE"
+    gpr_HUB_PARAMS="$gpr_HUB_PARAMS -F "
   fi
   gpr_HUB_OUTPUT="$(hub pull-request --no-edit --push $gpr_HUB_PARAMS)" || return $?
+  if [ -n "$gpr_PR_TEMPLATE" ]; then
+    rm -f "$gpr_PR_TEMPLATE"
+  fi
   gpr_GITHUB_PR_LINK="$(echo "$gpr_HUB_OUTPUT" | grep "^https://github.com/" | grep "/pull/")"
   echo "$gpr_HUB_OUTPUT" || return $?
   if [ -n "$gpr_GITHUB_COMMENTS" ]; then
