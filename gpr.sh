@@ -31,7 +31,7 @@ function gpr() {
     gpr_HUB_PARAMS="$gpr_HUB_PARAMS -l $gpr_GITHUB_LABELS"
   fi
   if [ -f .github/PULL_REQUEST_TEMPLATE.md ]; then
-    gpr_HUB_PARAMS="$gpr_HUB_PARAMS --file .github/PULL_REQUEST_TEMPLATE.md"
+    gpr_HUB_PARAMS="$gpr_HUB_PARAMS -F .github/PULL_REQUEST_TEMPLATE.md"
   fi
   gpr_HUB_OUTPUT="$(hub pull-request --no-edit --push $gpr_HUB_PARAMS)" || return $?
   gpr_GITHUB_PR_LINK="$(echo "$gpr_HUB_OUTPUT" | grep "^https://github.com/" | grep "/pull/")"
