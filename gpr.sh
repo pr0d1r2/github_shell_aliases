@@ -40,6 +40,7 @@ function gpr() {
     cat ".github/PULL_REQUEST_TEMPLATE.md" >> "$gpr_PR_TEMPLATE"
     gpr_HUB_PARAMS="$gpr_HUB_PARAMS -F $gpr_PR_TEMPLATE"
   fi
+  echo "Running 'hub pull-request --no-edit --push $gpr_HUB_PARAMS' ..."
   gpr_HUB_OUTPUT="$(hub pull-request --no-edit --push $gpr_HUB_PARAMS)" || return $?
   if [ -n "$gpr_PR_TEMPLATE" ]; then
     rm -f "$gpr_PR_TEMPLATE"
