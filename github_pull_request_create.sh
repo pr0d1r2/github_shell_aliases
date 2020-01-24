@@ -2,7 +2,7 @@
 #
 # Example usage:
 #   github_pull_request_create "the title of pull request" "the body of pull request" v13n-8472-xxx
-# or (which will detect current branch and make an PR without body):
+# or (will detect current branch and make an PR without body):
 #   github_pull_request_create "the title of pull request" "the body of pull request"
 function github_pull_request_create() {
   local github_pull_request_create_BRANCH
